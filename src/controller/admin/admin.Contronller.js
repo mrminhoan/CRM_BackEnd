@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer');
 const Admin = require('../../models/admin.Model');
 env.config()
-
+// abc
 // Create Admin
 exports.createAdmin = async (req, res) => {
     try {
