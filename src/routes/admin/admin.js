@@ -12,6 +12,9 @@ const { createUser,
     getEmployeeBySlug,
     createAdmin,
     employeeSendMail } = require('../../controller/admin/admin.Contronller')
+const {
+    createDepartment, getDepartment
+} = require('../../controller/Department/Department.Controller')
 const router = express.Router()
 const { validatesSignUpRequest, isRequestValidated, validateSignInRequest } = require('../../validators/user_Validators');
 const { requireSignin, adminMiddleware, employeeMiddleware } = require('../../common-middleware/MiddleWare');
@@ -38,14 +41,14 @@ const upload = multer({ storage: storage })
 
 router.post('/admin/create-admin', createAdmin)
 router.post('/admin/signin', employeeSignin)
-
+router.post('/admin/create-department', createDepartment)
+router.get('/admin/get-department', getDepartment)
 router.post('/admin/create-user', requireSignin, employeeMiddleware, upload.single('avatar'), createUser)
 router.post('/admin/delete-user', requireSignin, adminMiddleware, deleteUser)
 router.post('/admin/update-user', requireSignin, employeeMiddleware, upload.single('avatar'), updateUser)
 router.get('/admin/get-all-user', requireSignin, employeeMiddleware, getUser)
 router.post('/admin/get-user/:slug', requireSignin, employeeMiddleware, getUserBySlug)
 router.post('/admin/send-mail', requireSignin, employeeMiddleware, employeeSendMail)
-
 router.post('/admin/create-employee', requireSignin, adminMiddleware, createEmployee)
 router.post('/admin/update-employee', requireSignin, employeeMiddleware,updateEmployee)
 router.post('/admin/delete-employee', requireSignin, adminMiddleware, deleteEmployee)
