@@ -45,7 +45,6 @@ const userSchema = new mongoose.Schema({
     },
     userImage:{
         type: String,
-        default: ''
     },
     employee:{
        type: mongoose.Schema.Types.ObjectId, ref: "Employee"

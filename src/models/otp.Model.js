@@ -19,7 +19,6 @@ const otpSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: true,
         trim: true,
         lowercase: true
     },
@@ -35,20 +34,21 @@ const otpSchema = new mongoose.Schema({
     },
     sex: {
         type: String,
-        required: true,
     },
     date_of_birth:{
         type: Date
     },
     address:{
-        type: String 
+        type: String,
+        default: ''
     },
     userImage:{
         type: String,
         default: ''
     },
     employee:{
-       type: mongoose.Schema.Types.ObjectId, ref: "Employee"
+       type: mongoose.Schema.Types.ObjectId, ref: "Employee",
+       default: ""
     },
     role:{
         type: String,

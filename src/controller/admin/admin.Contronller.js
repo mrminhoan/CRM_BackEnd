@@ -10,7 +10,7 @@ env.config()
 // Create Admin
 exports.createAdmin = async (req, res) => {
     try {
-        const adminFind = await Employee.findOne({email: req.body.email})
+        const adminFind = await Employee.findOne({ email: req.body.email })
         if (adminFind) {
             return res.status(400).json({
                 Message: 'Admin already registered'
@@ -20,7 +20,7 @@ exports.createAdmin = async (req, res) => {
             const newAdmin = new Employee({
                 email: req.body.email,
                 hash_password: password,
-                role:"Admin"
+                role: "Admin"
             })
             const saveAdmin = await newAdmin.save()
             res.status(200).json({ saveAdmin })
@@ -33,14 +33,14 @@ exports.createAdmin = async (req, res) => {
 // Sign In
 exports.employeeSignin = async (req, res) => {
     try {
-        const employee = await Employee.findOne({ email: req.body.email})
+        const employee = await Employee.findOne({ email: req.body.email })
         if (employee) {
             const isPassword = await employee.comparePassword(req.body.password)
             if (isPassword) {
                 const token = await jwt.sign({ _id: employee._id, role: employee.role }, process.env.SECRET_KEY, { expiresIn: '2h' })
                 res.status(200).json({
                     token,
-                    Employee: employee
+                    Account: employee
                 })
             } else {
                 return res.status(404).json({
@@ -50,7 +50,7 @@ exports.employeeSignin = async (req, res) => {
 
         } else {
             return res.status(404).json({
-                Message: 'employee is not Found'
+                Message: 'Account is not Found'
             })
         }
 
@@ -91,11 +91,11 @@ exports.createUser = async (req, res) => {
 // Delete User
 exports.deleteUser = async (req, res) => {
     try {
-        const userFind = await User.findOne({ email: req.body.email })
+        const userFind = await User.find({ email: req.body.email })
         if (userFind) {
-            await User.deleteOne({ _id: userFind._id })
+            await User.deleteMany({ _id: userFind._id })
             const user = await User.find({})
-            res.status(200).json({ Message: "Delete successfully" })
+            res.status(200).json({ Message: "Delete successfully", user })
         } else {
             res.status(400).json({
                 Message: "User not Found"
@@ -122,9 +122,13 @@ exports.updateUser = async (req, res) => {
         if (req.body.password) {
             const password = await bcrypt.hash(req.body.password, 10);
             userUpdate.hash_password = password
+            
         }
         if (req.file) {
-            userUpdate.userImage = req.file.name
+            userUpdate.userImage = req.file.filename
+        }
+        if (req.body.employee) {
+            userUpdate.employee = req.body.employee
         }
         const user = await User.findOneAndUpdate({ email: req.body.email }, userUpdate, { new: true })
         if (user) {
@@ -156,7 +160,7 @@ exports.employeeSendMail = async (req, res) => {
     const mailOptions = {
         from: 'minhhoangv190200@gmail.com', // sender address
         to: req.body.email, // list of receivers
-        subject: 'Message From minhhoangv190200@gmail.com', // Subject line
+        subject: req.body.subject, // Subject line
         text: req.body.message, // plain text body
     }
 
@@ -197,7 +201,7 @@ exports.getUserBySlug = async (req, res) => {
     try {
         const userFind = await User.findOne({ _id: slug }).populate({ path: 'employee' })
         if (userFind) {
-            const {hash_password,...others} = userFind._doc
+            const { hash_password, ...others } = userFind._doc
             res.status(200).json(others)
         } else {
             res.status(404).json({
@@ -221,10 +225,11 @@ exports.createEmployee = async (req, res) => {
             email: req.body.email,
             hash_password: password,
             phone_number: req.body.phone_number,
-            room_name: req.body.room_name
+            room_name: req.body.room_name,
+            sex: req.body.sex
         })
         const EmployeeSave = await newEmployee.save()
-        const { hash_password,...others} = newEmployee._doc
+        const { hash_password, ...others } = newEmployee._doc
         res.status(200).json(others)
     } catch (error) {
         res.status(500).json({ error })
@@ -237,7 +242,8 @@ exports.updateEmployee = async (req, res) => {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             phone_number: req.body.phone_number,
-            room_name: req.body.room_name
+            room_name: req.body.room_name,
+            sex: req.body.sex
 
         }
         if (req.body.password) {
@@ -301,7 +307,7 @@ exports.getEmployee = async (req, res) => {
     }
 }
 
-// Get User by ID
+// Get Employee by ID
 exports.getEmployeeBySlug = async (req, res) => {
     const { slug } = req.params
     try {
