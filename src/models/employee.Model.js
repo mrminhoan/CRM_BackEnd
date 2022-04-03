@@ -7,32 +7,42 @@ const employeeSchema = new mongoose.Schema({
         type: String,
         trim: true,
         min: 3,
-        max: 30
+        max: 30,
+        default:""
     },
     lastName: {
         type: String,
         trim: true,
         min: 3,
-        max: 30
+        max: 30,
+        default:""
     },
     email: {
         type: String,
         required: true,
         unique: true,
         trim: true,
-        lowercase: true
+        lowercase: true,
+        default:""
     },
     hash_password: {
         type: String,
-        required: true
+        required: true,
+        default:""
     },
     phone_number: {
         type: String,
         trim: true,
-        max: 12
+        max: 12,
+        default:""
     },
     room_name: {
         type: String,
+        default:""
+    },
+    sex:{
+        type: String,
+        default:""
     },
     role: {
         type: String,

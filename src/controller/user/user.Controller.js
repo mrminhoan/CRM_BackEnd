@@ -8,6 +8,7 @@ const nodemailer = require('nodemailer');
 // const { read } = require('fs');
 const otpGenerator = require('otp-generator');
 const req = require('express/lib/request');
+const res = require('express/lib/response');
 env.config()
 
 exports.signup = async (req, res) => {
@@ -19,20 +20,6 @@ exports.signup = async (req, res) => {
             })
         } else {
             const password = await bcrypt.hash(req.body.password, 10);
-            // const newUser = new User({
-            //     firstName: req.body.firstName,
-            //     lastName: req.body.lastName,
-            //     email: req.body.email,
-            //     hash_password: password,
-            //     phone_number: req.body.phone_number,
-            //     sex: req.body.sex,
-            //     date_of_birth: req.body.date_of_birth,
-            //     employee: req.body.employee
-            // })
-            // if (req.file) {
-            //     newUser.userImage = req.file.filename
-            // }
-
             let firstName = req.body.firstName
             let lastName = req.body.lastName
             let email = req.body.email
@@ -41,10 +28,7 @@ exports.signup = async (req, res) => {
             let sex = req.body.sex
             let date_of_birth = req.body.date_of_birth
             let employee = req.body.employee
-            if (req.file) {
-                let userImage = req.file.filename
-            }
-
+            let userImage = (req.file) ? req.file.name : ""
             const newOTP = otpGenerator.generate(6,
                 { digits: true, alphabets: false, upperCaseAlphabets: false, specialChars: false }
             )
@@ -55,9 +39,10 @@ exports.signup = async (req, res) => {
                 email: email,
                 hash_password: hash_password,
                 phone_number: phone_number,
-                sex:sex,
+                sex: sex,
                 date_of_birth: date_of_birth,
-                employee: employee
+                employee: employee,
+                userImage: userImage
             })
             const saveOtp = await newOtp.save()
             res.status(200).json({ saveOtp })
@@ -66,6 +51,28 @@ exports.signup = async (req, res) => {
         res.status(500).json({ error })
     }
 }
+
+exports.verifyOtp = async (req, res) => {
+    const otpHolder = await OTP.find({
+        email: req.body.email
+    })
+    if (otpHolder.length === 0) {
+        return res.status(400).json({
+            Message: "You use an Expired OTP"
+        })
+    }
+    const rightOtpFind = otpHolder[otpHolder.length - 1]
+    console.log(rightOtpFind)
+    if (rightOtpFind.email == req.body.email && rightOtpFind.otp == req.body.otp) {
+        const { otp, ...rest } = rightOtpFind._doc
+        const user = new User(rest)
+        const saveUser = await user.save()
+        if (user) {
+            return (res.status(200).json({ saveUser }))
+        }
+    }
+}
+
 
 exports.signin = async (req, res) => {
     try {
@@ -134,7 +141,9 @@ exports.updateUser = async (req, res) => {
             userUpdate.hash_password = password
         }
         if (req.file) {
-            userUpdate.userImage = req.file.name
+            userUpdate.userImage = req.file.filename
+        } else {
+            console.log("none")
         }
         const user = await User.findOneAndUpdate({ email: req.body.email }, userUpdate, { new: true })
         if (user) {

@@ -1,6 +1,6 @@
 const express = require('express')
 const { requireSignin, adminMiddleware, userMiddleware } = require('../../common-middleware/MiddleWare')
-const { signup, signin, createUser, userSendMail, updateUser } = require('../../controller/user/user.Controller')
+const { signup, signin, createUser, userSendMail, updateUser, verifyOtp } = require('../../controller/user/user.Controller')
 const { validateSignInRequest, isRequestValidated, validatesSignUpRequest } = require('../../validators/user_Validators')
 const router = express.Router()
 const path = require('path')
@@ -22,7 +22,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage })
 
-router.post('/signup', validatesSignUpRequest, isRequestValidated, signup)
+router.post('/signup',signup)
+router.post('/verify',verifyOtp )
 router.post('/signin', validateSignInRequest, isRequestValidated, signin)
 router.post('/update-user', requireSignin, userMiddleware, upload.single('avatar'), updateUser)
 router.post('/send-mail', requireSignin, userSendMail)
