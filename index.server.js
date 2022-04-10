@@ -69,7 +69,7 @@ env.config()
 app.use(express.json())
 // Connect to database
 mongoose
-    .connect(`mongodb+srv://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_PASSWORD}@cluster0.ojmqj.mongodb.net/${process.env.MONGO_DB_DATABASE}?retryWrites=true&w=majority`, {
+    .connect(process.env.MONGO_DB, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })
@@ -78,8 +78,8 @@ mongoose
 
 
 // routes
-const userRoutes = require('./routes/user/user')
-const adminRoutes = require('./routes/admin/admin')
+const userRoutes = require('./src/routes/user/user')
+const adminRoutes = require('./src/routes/admin/admin')
 
 
 app.use('/api', userRoutes)
