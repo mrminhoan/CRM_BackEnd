@@ -3,6 +3,36 @@ const app = express()
 const env = require('dotenv')
 const mongoose = require('mongoose');
 const path = require('path')
+const http = require("http")
+const { Server } = require("socket.io")
+const server = http.createServer(app)
+
+const io = new Server(server, {
+    cors: {
+        origin: "http://localhost:3000",
+        methodes: ["GET", "POST"]
+    }
+
+})
+
+io.on("connection", (socket) => {
+    console.log(`User Connected: ${socket.id}`)
+
+    socket.on("join_room", (data) => {
+        socket.join(data);
+        console.log(`User with ID: ${socket.id} joined room: ${data}`);
+    });
+
+    socket.on("send_message", (data) => {
+        socket.to(data.room).emit("receive_message", data);
+    })
+
+    socket.on("disconnect", () => {
+        console.log("User Disconnected", socket.id)
+    })
+})
+
+
 app.use('/public', express.static(path.join(__dirname, 'uploads')))
 const cors = require('cors')
 
@@ -54,6 +84,6 @@ const adminRoutes = require('./routes/admin/admin')
 
 app.use('/api', userRoutes)
 app.use('/api', adminRoutes)
-app.listen(process.env.PORT, () => {
+server.listen(process.env.PORT || 5000, () => {
     console.log(`Server is running on port ${process.env.PORT}`)
 })
