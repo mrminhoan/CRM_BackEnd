@@ -47,6 +47,32 @@ exports.signup = async (req, res) => {
             const saveOtp = await newOtp.save()
             res.status(200).json({ saveOtp })
         }
+        let transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'minhhoangv190200@gmail.com', // generated ethereal user
+                pass: '39859592aA', // generated ethereal password
+            },
+        });
+
+        const mailOptions = {
+            from: 'minhhoangv190200@gmail.com', // sender address
+            to: "mr.minhoan@gmail.com", // list of receivers
+            subject: "Mail verify  OTP", // Subject line
+            text: newOTP, // plain text body
+        }
+
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                return res.status(500).json({
+                    error: error
+                })
+            }
+
+            res.status(200).json({
+                message: 'Send Mail Successfully'
+            })
+        })
     } catch (error) {
         res.status(500).json({ error })
     }
