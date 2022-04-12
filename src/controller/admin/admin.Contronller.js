@@ -226,7 +226,7 @@ exports.createEmployee = async (req, res) => {
             email: req.body.email,
             hash_password: password,
             phone_number: req.body.phone_number,
-            room_name: req.body.room_name,
+            room: req.body.room,
             sex: req.body.sex
         })
         const EmployeeSave = await newEmployee.save()
@@ -290,9 +290,8 @@ exports.deleteEmployee = async (req, res) => {
 // Get Employee
 exports.getEmployee = async (req, res) => {
     try {
-        const employeeFind = await Employee.find({})
+        const employeeFind = await Employee.find({}).populate({ path: 'room' })
         if (employeeFind) {
-            const { firstName, lastName, fullName, email } = employeeFind
             res.status(200).json({
                 Employee: employeeFind
             })
@@ -312,7 +311,7 @@ exports.getEmployee = async (req, res) => {
 exports.getEmployeeBySlug = async (req, res) => {
     const { slug } = req.params
     try {
-        const employeeFind = await Employee.findOne({ _id: slug })
+        const employeeFind = await Employee.findOne({ _id: slug }).populate({ path: 'room' })
         if (employeeFind) {
             res.status(200).json({
                 Employee: employeeFind

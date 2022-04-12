@@ -8,14 +8,14 @@ const employeeSchema = new mongoose.Schema({
         trim: true,
         min: 3,
         max: 30,
-        default:""
+        default: ""
     },
     lastName: {
         type: String,
         trim: true,
         min: 3,
         max: 30,
-        default:""
+        default: ""
     },
     email: {
         type: String,
@@ -23,31 +23,34 @@ const employeeSchema = new mongoose.Schema({
         unique: true,
         trim: true,
         lowercase: true,
-        default:""
+        default: ""
     },
     hash_password: {
         type: String,
         required: true,
-        default:""
+        default: ""
     },
     phone_number: {
         type: String,
         trim: true,
         max: 12,
-        default:""
+        default: ""
     },
-    room_name: {
+    // room_name: {
+    //     type: String,
+    //     default: ""
+    // },
+    sex: {
         type: String,
-        default:""
-    },
-    sex:{
-        type: String,
-        default:""
+        default: ""
     },
     role: {
         type: String,
         enum: ['Admin', 'Employee'],
         default: "Employee"
+    },
+    room: {
+        type: mongoose.Schema.Types.ObjectId, ref: "Department"
     },
 }, { timestamps: true })
 
