@@ -1,11 +1,11 @@
 const mongoose = require('mongoose')
 
 const DepartmentSchema = new mongoose.Schema({
-    name:{
-        type: String,
-        enum:["Marketing", "CSKH"]
+    room:{
+        type: Number,
+        // enum:["Marketing", "CSKH"]
     },
-    demartmentID:{
+    room_name:{
         type: String
     }
 })

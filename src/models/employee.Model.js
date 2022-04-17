@@ -41,8 +41,7 @@ const employeeSchema = new mongoose.Schema({
     //     default: ""
     // },
     sex: {
-        type: String,
-        default: ""
+        type: Number
     },
     role: {
         type: String,
