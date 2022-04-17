@@ -5,8 +5,13 @@ const env = require('dotenv')
 exports.createDepartment = async (req, res) => {
     try {
         const newDepartment = new Demartment({
-            name: req.body.name
+            room: req.body.room
         })
+        if(req.body.room){
+            (req.body.room == 1) ? (newDepartment.room_name = "Marketing") 
+            :
+            (req.body.room == 2) ? (newDepartment.room_name = "CSKH") : ""
+        }
         await newDepartment.save()
         res.status(200).json({
             newDepartment

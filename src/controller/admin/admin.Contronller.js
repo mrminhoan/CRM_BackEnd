@@ -245,7 +245,6 @@ exports.updateEmployee = async (req, res) => {
             phone_number: req.body.phone_number,
             room_name: req.body.room_name,
             sex: req.body.sex
-
         }
         if (req.body.password) {
             const password = await bcrypt.hash(req.body.password, 10);
@@ -255,7 +254,7 @@ exports.updateEmployee = async (req, res) => {
         if (employee) {
             res.status(200).json({
                 Message: "Update Successfully",
-                EmployeeUpdated: employee
+                data: employee
             })
         } else {
             res.status(400).json({
