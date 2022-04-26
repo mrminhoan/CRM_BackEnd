@@ -6,6 +6,7 @@ const router = express.Router()
 const path = require('path')
 const multer = require('multer');
 const shortid = require('shortid');
+const { getUser } = require('../../controller/user/user.Controller')
 
 // __dirname: đường dẫn tới thư mục chứa file đang thực thi lệnh dirname
 // path.dirname(__dirname): dẫn tới thư mục chứa thư  mục mà chưa file đang thực thi lệnh dirname
@@ -27,5 +28,6 @@ router.post('/verify',verifyOtp )
 router.post('/signin', validateSignInRequest, isRequestValidated, signin)
 router.post('/update-user', requireSignin, userMiddleware, upload.single('avatar'), updateUser)
 router.post('/send-mail', requireSignin, userSendMail)
+router.post('/getUserByToken', getUser)
 
 module.exports = router

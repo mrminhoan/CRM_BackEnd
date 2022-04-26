@@ -4,8 +4,7 @@ const bcrypt = require('bcrypt');
 const env = require('dotenv')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer');
-// const { getMaxListeners } = require("process");
-// const { read } = require('fs');
+
 const otpGenerator = require('otp-generator');
 const req = require('express/lib/request');
 const res = require('express/lib/response');
@@ -108,7 +107,7 @@ exports.signin = async (req, res) => {
         if (user) {
             const isPassword = await user.comparePassword(req.body.password)
             if (isPassword) {
-                const token = await jwt.sign({ _id: user._id, role: user.role }, process.env.SECRET_KEY, { expiresIn: '2h' })
+                const token = await jwt.sign({ _id: user._id, role: user.role }, process.env.SECRET_KEY, { expiresIn: '2d' })
                 const { _id,
                     firstName,
                     lastName,
@@ -218,4 +217,23 @@ exports.userSendMail = async (req, res) => {
             message: 'Send Mail Successfully'
         })
     })
+}
+exports.getUser = async (req, res) => {
+    let token = req.body.token
+    if (token) {
+        const user =jwt.verify(token, process.env.SECRET_KEY)
+        if (user) {
+            const userFind =  await User.findOne({ _id: user._id})
+            if (userFind) {
+                res.status(200).json({
+                    user: userFind
+                })
+            }
+            else{
+                res.status(404).json({
+                    Message: "User not Found"
+                })
+            }
+        }
+    }
 }
