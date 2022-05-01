@@ -23,8 +23,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage })
 
-router.post('/signup',signup)
-router.post('/verify',verifyOtp )
+router.post('/signup', signup)
+router.post('/verify', verifyOtp)
 router.post('/signin', validateSignInRequest, isRequestValidated, signin)
 router.post('/update-user', requireSignin, userMiddleware, upload.single('avatar'), updateUser)
 router.post('/send-mail', requireSignin, userSendMail)

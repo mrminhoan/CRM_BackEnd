@@ -34,26 +34,26 @@ const userSchema = new mongoose.Schema({
         max: 12
     },
     sex: {
-        type: String,
+        type: Number,
         required: true,
     },
-    date_of_birth:{
+    date_of_birth: {
         type: Date
     },
-    address:{
-        type: String 
+    address: {
+        type: String
     },
-    userImage:{
+    userImage: {
         type: String,
     },
-    employee:{
-       type: mongoose.Schema.Types.ObjectId, ref: "Employee"
+    employee: {
+        type: mongoose.Schema.Types.ObjectId, ref: "Employee"
     },
-    role:{
+    role: {
         type: String,
-        default:"User"
+        default: "User"
     }
-},{timestamps: true})
+}, { timestamps: true })
 
 userSchema.virtual('fullName').get(function () {
     return this.firstName + ' ' + this.lastName;

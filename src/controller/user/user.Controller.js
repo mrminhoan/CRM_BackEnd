@@ -8,6 +8,11 @@ const nodemailer = require('nodemailer');
 const otpGenerator = require('otp-generator');
 const req = require('express/lib/request');
 const res = require('express/lib/response');
+const { createFeedback, findFeedback } = require("../Feedback/Feedback.Controller")
+const Feedback = require("../../models/feedback.Model")
+
+// const Feedback = require("../../models/feedback.Model")
+
 env.config()
 
 exports.signup = async (req, res) => {
@@ -188,6 +193,8 @@ exports.updateUser = async (req, res) => {
     }
 }
 
+
+
 // User Send Mail
 exports.userSendMail = async (req, res) => {
 
@@ -202,34 +209,51 @@ exports.userSendMail = async (req, res) => {
     const mailOptions = {
         from: req.body.email, // sender address
         to: "minhhoangv190200@gmail.com", // list of receivers
-        subject: `Message From ${req.body.email}`, // Subject line
+        subject: req.body.title, // Subject line
         text: req.body.message, // plain text body
     }
 
-    transporter.sendMail(mailOptions, function (error, info) {
+    transporter.sendMail(mailOptions, async function (error, info) {
         if (error) {
             return res.status(500).json({
                 error: error
             })
+        } else {
+            try {
+                let newFeedback = await new Feedback({
+                    email: req.body.email,
+                    title: req.body.title,
+                    message: req.body.message,
+                    user: req.body.user
+                })
+                if (newFeedback) {
+                    await newFeedback.save()
+                    res.status(200).json({
+                        newFeedback
+                    })
+                }
+            } catch (error) {
+                res.status(500).json({
+                    Message: error
+                })
+            }
         }
 
-        res.status(200).json({
-            message: 'Send Mail Successfully'
-        })
     })
+
 }
 exports.getUser = async (req, res) => {
     let token = req.body.token
     if (token) {
-        const user =jwt.verify(token, process.env.SECRET_KEY)
+        const user = jwt.verify(token, process.env.SECRET_KEY)
         if (user) {
-            const userFind =  await User.findOne({ _id: user._id})
+            const userFind = await User.findOne({ _id: user._id })
             if (userFind) {
                 res.status(200).json({
                     user: userFind
                 })
             }
-            else{
+            else {
                 res.status(404).json({
                     Message: "User not Found"
                 })

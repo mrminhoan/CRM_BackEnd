@@ -21,6 +21,7 @@ const { requireSignin, adminMiddleware, employeeMiddleware } = require('../../co
 const path = require('path')
 const multer = require('multer');
 const shortid = require('shortid');
+const { updateFeedback, findFeedback, deleteFeedback } = require('../../controller/Feedback/Feedback.Controller');
 
 // __dirname: đường dẫn tới thư mục chứa file đang thực thi lệnh dirname
 // path.dirname(__dirname): dẫn tới thư mục chứa thư  mục mà chưa file đang thực thi lệnh dirname
@@ -50,9 +51,13 @@ router.get('/admin/get-all-user', requireSignin, employeeMiddleware, getUser)
 router.post('/admin/get-user/:slug', requireSignin, employeeMiddleware, getUserBySlug)
 router.post('/admin/send-mail', requireSignin, employeeMiddleware, employeeSendMail)
 router.post('/admin/create-employee', requireSignin, adminMiddleware, createEmployee)
-router.post('/admin/update-employee', requireSignin, employeeMiddleware,updateEmployee)
+router.post('/admin/update-employee', requireSignin, employeeMiddleware, updateEmployee)
 router.post('/admin/delete-employee', requireSignin, adminMiddleware, deleteEmployee)
 router.get('/admin/get-all-employee', requireSignin, adminMiddleware, getEmployee)
 router.get('/admin/get-employee/:slug', requireSignin, adminMiddleware, getEmployeeBySlug)
+
+router.post('/admin/update-feedback', updateFeedback)
+router.post('/admin/find-feedback', findFeedback)
+router.post('/admin/delete-feedback', deleteFeedback)
 
 module.exports = router
