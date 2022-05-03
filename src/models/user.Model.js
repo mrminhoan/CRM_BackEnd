@@ -47,7 +47,8 @@ const userSchema = new mongoose.Schema({
         type: String,
     },
     employee: {
-        type: mongoose.Schema.Types.ObjectId, ref: "Employee"
+        type: mongoose.Schema.Types.ObjectId, ref: "Employee",        
+        default: ""
     },
     role: {
         type: String,

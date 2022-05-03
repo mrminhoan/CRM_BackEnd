@@ -94,7 +94,7 @@ exports.deleteUser = async (req, res) => {
     try {
         const userFind = await User.find({ email: req.body.email })
         if (userFind) {
-            await User.deleteMany({ _id: userFind._id })
+            await User.deleteOne({ email: req.body.email })
             const user = await User.find({})
             res.status(200).json({ Message: "Delete successfully", user })
         } else {
@@ -123,7 +123,7 @@ exports.updateUser = async (req, res) => {
         if (req.body.password) {
             const password = await bcrypt.hash(req.body.password, 10);
             userUpdate.hash_password = password
-            
+
         }
         if (req.file) {
             userUpdate.userImage = req.file.filename
@@ -243,7 +243,7 @@ exports.updateEmployee = async (req, res) => {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             phone_number: req.body.phone_number,
-            room_name: req.body.room_name,
+            room: req.body.room,
             sex: req.body.sex
         }
         if (req.body.password) {
@@ -324,5 +324,25 @@ exports.getEmployeeBySlug = async (req, res) => {
         res.status(500).json({
             Error: error
         })
+    }
+}
+
+exports.getEmployeeByToken = async (req, res) => {
+    let token = req.body.token
+    if (token) {
+        const employee = jwt.verify(token, process.env.SECRET_KEY)
+        if (employee) {
+            const employeeFind = await Employee.findOne({ _id: employee._id }).populate({path: "room"})
+            if (employeeFind) {
+                res.status(200).json({
+                    employeeFind
+                })
+            }
+            else {
+                res.status(404).json({
+                    Message: "Employee not Found"
+                })
+            }
+        }
     }
 }

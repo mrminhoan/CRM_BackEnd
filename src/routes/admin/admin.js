@@ -11,7 +11,8 @@ const { createUser,
     getEmployee,
     getEmployeeBySlug,
     createAdmin,
-    employeeSendMail } = require('../../controller/admin/admin.Contronller')
+    employeeSendMail,
+    getEmployeeByToken } = require('../../controller/admin/admin.Contronller')
 const {
     createDepartment, getDepartment
 } = require('../../controller/Department/Department.Controller')
@@ -55,9 +56,9 @@ router.post('/admin/update-employee', requireSignin, employeeMiddleware, updateE
 router.post('/admin/delete-employee', requireSignin, adminMiddleware, deleteEmployee)
 router.get('/admin/get-all-employee', requireSignin, adminMiddleware, getEmployee)
 router.get('/admin/get-employee/:slug', requireSignin, adminMiddleware, getEmployeeBySlug)
-
+router.post('/admin/get-empoloyee-by-token', requireSignin, getEmployeeByToken)
 router.post('/admin/update-feedback', updateFeedback)
-router.post('/admin/find-feedback', findFeedback)
+router.get('/admin/find-feedback', findFeedback)
 router.post('/admin/delete-feedback', deleteFeedback)
 
 module.exports = router
