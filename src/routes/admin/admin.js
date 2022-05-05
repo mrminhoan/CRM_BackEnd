@@ -22,7 +22,7 @@ const { requireSignin, adminMiddleware, employeeMiddleware } = require('../../co
 const path = require('path')
 const multer = require('multer');
 const shortid = require('shortid');
-const { updateFeedback, findFeedback, deleteFeedback } = require('../../controller/Feedback/Feedback.Controller');
+const { updateFeedback, findFeedback, deleteFeedback, getDetailFeedback } = require('../../controller/Feedback/Feedback.Controller');
 
 // __dirname: đường dẫn tới thư mục chứa file đang thực thi lệnh dirname
 // path.dirname(__dirname): dẫn tới thư mục chứa thư  mục mà chưa file đang thực thi lệnh dirname
@@ -59,6 +59,7 @@ router.get('/admin/get-employee/:slug', requireSignin, adminMiddleware, getEmplo
 router.post('/admin/get-empoloyee-by-token', requireSignin, getEmployeeByToken)
 router.post('/admin/update-feedback', updateFeedback)
 router.get('/admin/find-feedback', findFeedback)
+router.post('/admin/get-feedback-by-id', getDetailFeedback)
 router.post('/admin/delete-feedback', deleteFeedback)
 
 module.exports = router
