@@ -77,3 +77,22 @@ exports.deleteFeedback = async (req, res) => {
 
     }
 }
+
+exports.getDetailFeedback = async (req, res) => {
+    try {
+        const feedback = await Feedback.findById({ _id: req.body.id})
+        if (feedback) {
+            res.status(200).json({
+                feedback
+            })
+        } else {
+            res.status(404).json({
+                Message: "Feedback not Found"
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            error
+        })
+    }
+}
