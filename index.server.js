@@ -6,6 +6,7 @@ const path = require('path')
 const http = require("http")
 const { Server } = require("socket.io")
 const server = http.createServer(app)
+app.use("/upload", express.static(path.join(__dirname, "/src/upload")));
 
 const io = new Server(server, {
     cors: {
