@@ -33,6 +33,7 @@ exports.signup = async (req, res) => {
             let date_of_birth = req.body.date_of_birth
             let employee = req.body.employee
             let userImage = (req.file) ? req.file.name : ""
+            let address = req.body.address
             const newOTP = otpGenerator.generate(6,
                 { digits: true, alphabets: false, upperCaseAlphabets: false, specialChars: false }
             )
@@ -46,7 +47,8 @@ exports.signup = async (req, res) => {
                 sex: sex,
                 date_of_birth: date_of_birth,
                 employee: employee,
-                userImage: userImage
+                userImage: userImage,
+                address: address
             })
             const saveOtp = await newOtp.save()
             res.status(200).json({ saveOtp })
@@ -192,7 +194,23 @@ exports.updateUser = async (req, res) => {
         res.status(500).json({ Error: error })
     }
 }
+exports.changePassword = async (req, res) => {
+    try {
+        const isPassword = await user.comparePassword(req.body.oldPassword)
+        if (req.body.password !== null && req.body.password !== "") {
+            const password = await bcrypt.hash(req.body.password, 10);
+            await User.findOneAndUpdate({ _id: req.body.id }, { hash_password: password }, { new: true })
+            res.status(200).json({
+                Message: "Update password successfully "
+            })
+        } else {
+            res.status(404)
+        }
+    } catch (error) {
+        res.status(500)
 
+    }
+}
 
 
 // User Send Mail
@@ -261,3 +279,4 @@ exports.getUser = async (req, res) => {
         }
     }
 }
+

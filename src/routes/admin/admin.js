@@ -12,7 +12,13 @@ const { createUser,
     getEmployeeBySlug,
     createAdmin,
     employeeSendMail,
-    getEmployeeByToken } = require('../../controller/admin/admin.Contronller')
+    getEmployeeByToken,
+    getUserCreatedByEmployee,
+    getUserByGender,
+    getUserCreatedBySelf,
+    getUserByEmployee,
+    getEmployeeChart, 
+    changePassword} = require('../../controller/admin/admin.Contronller')
 const {
     createDepartment, getDepartment
 } = require('../../controller/Department/Department.Controller')
@@ -53,6 +59,7 @@ router.post('/admin/get-user/:slug', requireSignin, employeeMiddleware, getUserB
 router.post('/admin/send-mail', requireSignin, employeeMiddleware, employeeSendMail)
 router.post('/admin/create-employee', requireSignin, adminMiddleware, createEmployee)
 router.post('/admin/update-employee', requireSignin, employeeMiddleware, updateEmployee)
+router.post('/admin/change-password', changePassword)
 router.post('/admin/delete-employee', requireSignin, adminMiddleware, deleteEmployee)
 router.get('/admin/get-all-employee', requireSignin, adminMiddleware, getEmployee)
 router.get('/admin/get-employee/:slug', requireSignin, adminMiddleware, getEmployeeBySlug)
@@ -60,6 +67,10 @@ router.post('/admin/get-empoloyee-by-token', requireSignin, getEmployeeByToken)
 router.post('/admin/update-feedback', updateFeedback)
 router.get('/admin/find-feedback', findFeedback)
 router.post('/admin/get-feedback-by-id', getDetailFeedback)
-router.post('/admin/delete-feedback', deleteFeedback)
-
+router.post('/admin/delete-feedback', requireSignin, adminMiddleware, deleteFeedback)
+router.get('/admin/get-user-created-by-employee', getUserCreatedByEmployee)
+router.get('/admin/get-user-by-render', getUserByGender)
+router.get('/admin/get-user-created-by-self', getUserCreatedBySelf)
+router.get('/admin/get-user-by-employee', getUserByEmployee)
+// router.get("/admin/get-employee-chart", getEmployeeChart)
 module.exports = router
