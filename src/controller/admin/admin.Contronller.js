@@ -352,9 +352,13 @@ exports.getEmployeeByToken = async (req, res) => {
 
 exports.getUserByGender = async (req, res) => {
     try {
-        const user = await User.find({ sex: req.body.sex })
-        if (user) {
-            res.status(200).json({ user })
+        const userMale = await User.find({ sex: 1 })
+        const userFemale = await User.find({ sex: 2 })
+        if (userMale || userFemale) {
+            res.status(200).json({ 
+                male: userMale,
+                female: userFemale
+             })
         } else {
             res.status(400).json({ Message: "User not found" })
         }
@@ -391,6 +395,7 @@ exports.getUserCreatedBySelf = async (req, res) => {
 
 
 exports.getUserByEmployee = async (req, res) => {
+    const users = []
     try {
         const user = await User.find({ employee: req.body.employee })
         if (user) {
@@ -435,7 +440,7 @@ exports.changePassword = async (req, res) => {
             }
             else {
                 res.status(404).json({
-                    Message:"Mật khẩu cũ sai"
+                    Message: "Mật khẩu cũ sai"
                 })
             }
         }
