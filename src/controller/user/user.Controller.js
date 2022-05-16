@@ -196,15 +196,24 @@ exports.updateUser = async (req, res) => {
 }
 exports.changePassword = async (req, res) => {
     try {
-        const isPassword = await user.comparePassword(req.body.oldPassword)
-        if (req.body.password !== null && req.body.password !== "") {
-            const password = await bcrypt.hash(req.body.password, 10);
-            await User.findOneAndUpdate({ _id: req.body.id }, { hash_password: password }, { new: true })
-            res.status(200).json({
-                Message: "Update password successfully "
-            })
-        } else {
-            res.status(404)
+        const user = await User.findOne({ _id: req.body.id })
+        if (user) {
+            const isPassword = await user.comparePassword(req.body.oldPassword)
+            if (isPassword) {
+                if (req.body.password !== null && req.body.password !== "") {
+                    const password = await bcrypt.hash(req.body.password, 10);
+                    await User.findOneAndUpdate({ _id: req.body.id }, { hash_password: password }, { new: true })
+                    res.status(200).json({
+                        Message: "Update password successfully "
+                    })
+                } else {
+                    res.status(404)
+                }
+            }else{
+                res.status(404).json({
+                    Message: "Mật khẩu cũ không đúng"
+                })
+            }
         }
     } catch (error) {
         res.status(500)
