@@ -10,6 +10,7 @@ app.use("/upload", express.static(path.join(__dirname, "/src/upload")));
 
 const io = new Server(server, {
     cors: {
+        // origin: "https://h-and-c-group-c5dqavhmf-campro2210.vercel.app",
         origin: "http://localhost:3000",
         methodes: ["GET", "POST"]
     }
