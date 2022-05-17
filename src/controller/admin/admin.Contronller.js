@@ -382,7 +382,7 @@ exports.getUserCreatedByEmployee = async (req, res) => {
 
 exports.getUserCreatedBySelf = async (req, res) => {
     try {
-        const user = await User.find({ employee: "" })
+        const user = await User.find({ employee: null })
         if (user) {
             res.status(200).json({ user })
         } else {
